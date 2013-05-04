@@ -10,8 +10,9 @@ import percolationLibrary as PL
 close("all")
 
 npValues = 100
-pValues  = linspace(0.1, 1.0, npValues)
+pValues  = linspace(0.54, 0.62, npValues)
 nSamples = array([1000, 1000, 1000, 200, 200, 200]) 
+#nSamples /= 100
 L         = array([25,   50,   100, 200, 400, 800]) 
 
 PValues  = zeros((len(L), npValues))
@@ -25,7 +26,7 @@ Ly = L
 pPi0_8Values = zeros(len(L))
 pPi0_3Values = zeros(len(L))
 
-
+figure()
 for LIndex in range(len(L)):
     print Lx[LIndex]
     
@@ -35,10 +36,16 @@ for LIndex in range(len(L)):
         PiValues[LIndex,pIndex], PValues[LIndex,pIndex] = PL.clusterDensity(nSamples[LIndex],Lx[LIndex],Ly[LIndex],p)  
 
    
-    pPi0_8Values[LIndex] = pValues[array(where(PiValues[LIndex,:]<= 0.8))[:,-1]]
-    pPi0_3Values[LIndex] = pValues[array(where(PiValues[LIndex,:]<= 0.3))[:,-1]]
+    
+    lastIndex = where(PiValues[LIndex,:] <= 0.8)[0][-1]
+    pPi0_8Values[LIndex] = pValues[lastIndex]
+    
+    lastIndex = where(PiValues[LIndex,:] <= 0.3)[0][-1]
+    pPi0_3Values[LIndex]= pValues[lastIndex]
+    
+    plot(pValues, PiValues[LIndex])
 
-
+figure()
 plot(L, pPi0_3Values,'-o' ,label = "x = 0.3")
 plot(L, pPi0_8Values,'-*', label = "x = 0.8")   
 xlabel(r"$L$")
